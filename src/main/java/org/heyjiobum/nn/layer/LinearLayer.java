@@ -13,7 +13,7 @@ public class LinearLayer extends Layer {
     private double[][] prevS;
     private double[][] prevOut;
 
-    public LinearLayer(int neurons, Activation activation, Optimizer optimizer) {
+    public LinearLayer(int neurons, Activation activation) {
         super(neurons);
         this.activation = activation;
     }
