@@ -32,6 +32,6 @@ public class OneHotAccuracyMetric extends Metric {
 
     @Override
     public String getMetricString() {
-        return "accuracy: " + 100 * iterations / guessed_counter;
+        return "accuracy: " + 100 * guessed_counter / iterations;
     }
 }
