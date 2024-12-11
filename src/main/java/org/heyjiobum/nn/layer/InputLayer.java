@@ -3,7 +3,7 @@ package org.heyjiobum.nn.layer;
 import org.heyjiobum.nn.optimizer.Optimizer;
 
 public class InputLayer extends Layer {
-    InputLayer(int neurons) {
+    public InputLayer(int neurons) {
         super(neurons);
     }
 
