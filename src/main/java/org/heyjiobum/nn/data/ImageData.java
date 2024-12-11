@@ -11,7 +11,7 @@ public class ImageData {
 
     public double[] getOneHotClass() {
         double[] result = new double[10];
-        result[imageClass - 1] = 1;
+        result[imageClass] = 1;
         return result;
     }
 }
