@@ -1,6 +1,7 @@
 package org.heyjiobum.nn.optimizer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Adam extends Optimizer {
@@ -48,7 +49,7 @@ public class Adam extends Optimizer {
         }
 
         if (parametersMWeights.isEmpty() && parametersVWeights.isEmpty()) {
-            for (double[][] weight : parametersMWeights) {
+            for (double[][] weight : parametersWeights) {
                 parametersMWeights.add(new double[weight.length][weight[0].length]);
                 parametersVWeights.add(new double[weight.length][weight[0].length]);
             }
