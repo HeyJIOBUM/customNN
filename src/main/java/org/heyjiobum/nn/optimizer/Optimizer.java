@@ -23,7 +23,7 @@ public abstract class Optimizer {
 
     public void apply(double[] bias, double[] biasGradient) {
         parametersBias.add(bias);
-        parametersBias.add(biasGradient);
+        gradientsBias.add(biasGradient);
     }
 
     public void apply(double[][] weights, double[][] weightsGradient) {
