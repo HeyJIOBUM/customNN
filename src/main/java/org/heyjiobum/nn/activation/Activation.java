@@ -1,6 +1,6 @@
 package org.heyjiobum.nn.activation;
 
 public abstract class Activation {
-    public abstract double[] (double[] values);
-
+    public abstract double[] activate(double[] values);
+    public abstract double[][] jacobian(double[] values);
 }
