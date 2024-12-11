@@ -82,10 +82,12 @@ public class LinearLayer extends Layer {
     private void adjustPrevWeights(Optimizer optimizer, double[][] deDs) {
         double[][] weightsGradient = new double[this.weights.length][this.weights[0].length];
 
-        for (int k = 0; k < deDs.length; k++) {
-            for (int j = 0; j < prevIn[0].length; j++) {
-                for (int l = 0; l < deDs[0].length; l++) {
-                    weightsGradient[l][j] += deDs[k][l] * prevIn[k][j];
+        int batchSize = deDs.length;
+        int prevLayerNeurons = weights.length;
+        for (int batch = 0; batch < batchSize; batch++) {
+            for (int j = 0; j < prevLayerNeurons; j++) {
+                for (int l = 0; l < neurons; l++) {
+                    weightsGradient[j][l] += deDs[batch][l] * prevIn[batch][j];
                 }
             }
         }
