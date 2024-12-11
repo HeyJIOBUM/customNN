@@ -2,11 +2,8 @@ package org.heyjiobum.nn;
 
 import org.heyjiobum.nn.data.ImageData;
 import org.heyjiobum.nn.layer.Layer;
-import org.heyjiobum.nn.layer.LinearLayer;
 import org.heyjiobum.nn.metric.Metric;
 import org.heyjiobum.nn.optimizer.Optimizer;
-
-import java.util.List;
 
 public class Model {
     private Layer[] layers;
@@ -23,18 +20,21 @@ public class Model {
 
     public void fit(ImageData[][] trainData, ImageData[][] testData, int epochs) {
         for (int epoch = 0; epoch < epochs; epoch++) {
-            trainEpoch(trainData, epoch);
-            testEpoch(testData, epoch);
+            System.out.println("Epoch " + epoch + "/" + epochs);
+            trainEpoch(trainData);
+            testEpoch(testData);
         }
     }
 
-    private void trainEpoch(ImageData[][] trainData, int epoch) {
+    private void trainEpoch(ImageData[][] trainData) {
         this.optimizer.clearState();
 
         for (Metric metric : metrics)
             metric.clearState();
 
-        for (ImageData[] batchImages : trainData) {
+        int batchesSize = trainData.length;
+        for (int batchesIdx = 0; batchesIdx < batchesSize; batchesIdx++) {
+            ImageData[] batchImages = trainData[batchesIdx];
             int batchSize = batchImages.length;
 
             double[][] images = new double[batchImages.length][];
@@ -51,9 +51,10 @@ public class Model {
 
             double[][] yPredBatch = forward(images);
 
-            double[][] lossGradientBatch = new double[batchSize][];
+            int lastLayerNeurons = yPredBatch[0].length;
+            double[][] lossGradientBatch = new double[batchSize][lastLayerNeurons];
             for (int j = 0; j < batchSize; j++) {
-                for (int k = 0; k < yPredBatch.length; k++) {
+                for (int k = 0; k < lastLayerNeurons; k++) {
                     lossGradientBatch[j][k] = yPredBatch[j][k] - batchClasses[j][k];
                 }
             }
@@ -66,15 +67,23 @@ public class Model {
             }
 
             this.optimizer.nextStep();
+
+            StringBuilder metricsState = new StringBuilder();
+            for (Metric metric : metrics)
+                metricsState.append(metric.getMetricString()).append(", ");
+            System.out.print("\rtrain: " + batchesIdx + "/" + batchesSize + "; " + metricsState);
         }
+        System.out.println();
     }
 
-    private void testEpoch(ImageData[][] trainData, int epoch) {
+    private void testEpoch(ImageData[][] trainData) {
         for (Metric metric : metrics) {
             metric.clearState();
         }
 
-        for (ImageData[] batchImages : trainData) {
+        int batchesSize = trainData.length;
+        for (int batchesIdx = 0; batchesIdx < batchesSize; batchesIdx++) {
+            ImageData[] batchImages = trainData[batchesIdx];
             int batchSize = batchImages.length;
 
             double[][] images = new double[batchImages.length][];
@@ -94,7 +103,13 @@ public class Model {
                     metric.updateState(yPredBatch[j], batchClasses[j]);
                 }
             }
+
+            StringBuilder metricsState = new StringBuilder();
+            for (Metric metric : metrics)
+                metricsState.append(metric.getMetricString()).append(", ");
+            System.out.print("\rtest:  " + batchesIdx + "/" + batchesSize + "; " + metricsState);
         }
+        System.out.println();
     }
 
     private double[][] forward(double[][] inBatch) {
